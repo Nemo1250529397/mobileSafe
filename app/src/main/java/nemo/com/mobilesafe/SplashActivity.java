@@ -35,7 +35,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import nemo.com.mobilesafe.nemo.com.mobilesafe.utils.StreamTool;
+import nemo.com.mobilesafe.utils.StreamTool;
 
 /**
  * Created by nemo on 16-6-2.
@@ -99,9 +99,9 @@ public class SplashActivity extends Activity {
 
         pbUpdate = (ProgressBar) findViewById(R.id.pb_updateprogress);
 
-//        AlphaAnimation aa = new AlphaAnimation(0.2f, 0.1f);
-//        aa.setDuration(1000);
-//        findViewById(R.id.rl_splash).startAnimation(aa);
+        AlphaAnimation aa = new AlphaAnimation(0.2f, 0.1f);
+        aa.setDuration(500);
+        findViewById(R.id.rl_splash).startAnimation(aa);
     }
 
     public void showUpdateDialog() {
@@ -154,13 +154,12 @@ public class SplashActivity extends Activity {
                             intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
 
                             startActivity(intent);
-
+                            SplashActivity.this.finish();
                         }
                     });
                 }
                 dialog.dismiss();
                 dialog = null;
-                finish();
             }
         });
         builder.setNegativeButton(R.string.updatenegative, new DialogInterface.OnClickListener() {
@@ -226,9 +225,9 @@ public class SplashActivity extends Activity {
                     long endTime = System.currentTimeMillis();
                     long durtion = endTime - startTime;
 
-//                    if(durtion < 2000) {
-//                        SystemClock.sleep(2000-durtion);
-//                    }
+                    if(durtion < 2000) {
+                        SystemClock.sleep(2000-durtion);
+                    }
 
                     mes.sendToTarget();
                 }

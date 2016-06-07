@@ -1,4 +1,4 @@
-package nemo.com.mobilesafe.nemo.com.mobilesafe.utils;
+package nemo.com.mobilesafe.utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
