@@ -10,4 +10,6 @@
     <string name="hometitile">主页</string>
     <string name="advertisement">This is an advertisement! This is an advertisement! This is an advertisement!</string>
 
+    <string name="settingstitle">设置中心</string>
+
 </resources>
