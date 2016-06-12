@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:nemo="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -14,9 +15,13 @@
 
     <nemo.com.mobilesafe.ui.SettingItemView
         android:id="@+id/settingitemview"
+        nemo:settings_title="@string/settings_title"
+        nemo:desc_on="@string/desc_on"
+        nemo:desc_off="@string/desc_off"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
     </nemo.com.mobilesafe.ui.SettingItemView>
 
 </LinearLayout>
+

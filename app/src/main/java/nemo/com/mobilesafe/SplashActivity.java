@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -54,6 +55,8 @@ public class SplashActivity extends Activity {
     private String description = null;
     private String apkUrl = null;
 
+    private SharedPreferences sp = null;
+
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -93,15 +96,23 @@ public class SplashActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash_activity);
 
-        tvSplashVersion = (TextView) findViewById(R.id.tv_splash_version);
-        tvSplashVersion.setText("版本号：" + getVersionName());
-        requestUpate();
-
-        pbUpdate = (ProgressBar) findViewById(R.id.pb_updateprogress);
-
         AlphaAnimation aa = new AlphaAnimation(0.2f, 0.1f);
         aa.setDuration(500);
         findViewById(R.id.rl_splash).startAnimation(aa);
+
+        tvSplashVersion = (TextView) findViewById(R.id.tv_splash_version);
+        tvSplashVersion.setText("版本号：" + getVersionName());
+        pbUpdate = (ProgressBar) findViewById(R.id.pb_updateprogress);
+
+        sp = getSharedPreferences(SettingsActivity.SETTINGS, MODE_PRIVATE);
+
+        if(sp.getBoolean(SettingsActivity.AUTOUPDATE, false)) {
+            requestUpate();
+        } else {
+            SystemClock.sleep(2000);
+            enterHome();
+            finish();
+        }
     }
 
     public void showUpdateDialog() {
