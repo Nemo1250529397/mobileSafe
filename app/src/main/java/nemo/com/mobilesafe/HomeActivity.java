@@ -18,6 +18,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import nemo.com.mobilesafe.utils.MD5Utils;
+
 import static nemo.com.mobilesafe.R.layout.list_item_home;
 
 /**
@@ -132,7 +134,7 @@ public class HomeActivity extends Activity implements AdapterView.OnItemClickLis
 
                 String storePwd = sp.getString("mobilePassword", "");
 
-                if(storePwd.equals(confirmPwd)) {
+                if(storePwd.equals(MD5Utils.encodeWithMD5(confirmPwd))) {
                     Toast.makeText(HomeActivity.this, "密码输入正确！", Toast.LENGTH_SHORT).show();
                     alertDialog.dismiss();
                 } else {
@@ -153,7 +155,7 @@ public class HomeActivity extends Activity implements AdapterView.OnItemClickLis
 
                 if(setupPwd.equals(confirmPwd)) {
                     SharedPreferences.Editor editor = sp.edit();
-                    editor.putString("mobilePassword", setupPwd);
+                    editor.putString("mobilePassword", MD5Utils.encodeWithMD5(setupPwd));
                     editor.commit();
                     alertDialog.dismiss();
                 } else {
