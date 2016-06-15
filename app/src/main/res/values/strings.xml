@@ -23,4 +23,7 @@
     <string name="ok">确认</string>
     <string name="cancel">取消</string>
 
+    <!--Step01Activity-->
+    <string name="step01_title">1.欢迎使用手机防盗</string>
+
 </resources>

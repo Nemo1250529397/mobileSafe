@@ -137,6 +137,10 @@ public class HomeActivity extends Activity implements AdapterView.OnItemClickLis
                 if(storePwd.equals(MD5Utils.encodeWithMD5(confirmPwd))) {
                     Toast.makeText(HomeActivity.this, "密码输入正确！", Toast.LENGTH_SHORT).show();
                     alertDialog.dismiss();
+
+                    Intent intent = new Intent(HomeActivity.this, Step01Activity.class);
+                    startActivity(intent);
+
                 } else {
                     Toast.makeText(HomeActivity.this, "密码输入错误！", Toast.LENGTH_SHORT).show();
                     etConfirmPwd.setText("");
