@@ -8,14 +8,20 @@ import android.view.View;
 /**
  * Created by nemo on 16-6-15.
  */
-public class Step01Activity extends Activity {
+public class Step03Activity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.step01_activity);
+        setContentView(R.layout.step03_activity);
+    }
+
+    public void previous(View view) {
+        Intent intent = new Intent(Step03Activity.this, Step02Activity.class);
+        startActivity(intent);
+        finish();
     }
 
     public void next(View view) {
-        Intent intent = new Intent(Step01Activity.this, Step02Activity.class);
+        Intent intent = new Intent(Step03Activity.this, Step04Activity.class);
         startActivity(intent);
         finish();
     }

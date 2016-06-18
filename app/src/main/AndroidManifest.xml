@@ -24,6 +24,11 @@
         <activity android:name=".HomeActivity" />
         <activity android:name=".SettingsActivity" />
         <activity android:name=".Step01Activity" />
+        <activity android:name=".Step02Activity" />
+        <activity android:name=".Step03Activity" />
+        <activity android:name=".Step04Activity" />
+
+        <activity android:name=".LostFundActivity" />
 
     </application>
 

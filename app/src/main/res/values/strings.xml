@@ -26,4 +26,21 @@
     <!--Step01Activity-->
     <string name="step01_title">1.欢迎使用手机防盗</string>
 
+    <!--Step02Activity-->
+    <string name="step02_title">2.手机卡绑定</string>
+    <string name="step02_siv_title">Bind the sim card by clicking</string>
+    <string name="step02_siv_desc_on">The sim card does not bind!</string>
+    <string name="step02_siv_desc_off">The sim card have bund!</string>
+
+    <!--Step03Activity-->
+    <string name="step03_title">3.Set the safe phone number</string>
+    <string name="step03_btn_select">Choice the Contact</string>
+
+    <!--Step04Activity-->
+    <string name="step04_title">4.Congratulations, set the config successful!</string>
+    <string name="step04_desc">you do not active the function of protect the phone</string>
+
+    <!--LostFundActivity-->
+    <string name="lostfund_title">Protect to lost for the phone</string>
+
 </resources>
