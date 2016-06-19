@@ -18,5 +18,7 @@ public class Step01Activity extends Activity {
         Intent intent = new Intent(Step01Activity.this, Step02Activity.class);
         startActivity(intent);
         finish();
+
+        overridePendingTransition(R.anim.tran_next_in, R.anim.tran_next_out);
     }
 }

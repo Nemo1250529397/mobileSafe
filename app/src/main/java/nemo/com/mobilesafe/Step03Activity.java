@@ -18,11 +18,15 @@ public class Step03Activity extends Activity {
         Intent intent = new Intent(Step03Activity.this, Step02Activity.class);
         startActivity(intent);
         finish();
+
+        overridePendingTransition(R.anim.tran_pre_in, R.anim.tran_pre_out);
     }
 
     public void next(View view) {
         Intent intent = new Intent(Step03Activity.this, Step04Activity.class);
         startActivity(intent);
         finish();
+
+        overridePendingTransition(R.anim.tran_next_in, R.anim.tran_next_out);
     }
 }

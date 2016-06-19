@@ -138,7 +138,7 @@ public class HomeActivity extends Activity implements AdapterView.OnItemClickLis
                     Toast.makeText(HomeActivity.this, "密码输入正确！", Toast.LENGTH_SHORT).show();
                     alertDialog.dismiss();
 
-                    Intent intent = new Intent(HomeActivity.this, Step01Activity.class);
+                    Intent intent = new Intent(HomeActivity.this, LostFundActivity.class);
                     startActivity(intent);
 
                 } else {
@@ -161,6 +161,10 @@ public class HomeActivity extends Activity implements AdapterView.OnItemClickLis
                     SharedPreferences.Editor editor = sp.edit();
                     editor.putString("mobilePassword", MD5Utils.encodeWithMD5(setupPwd));
                     editor.commit();
+
+                    Intent intent = new Intent(HomeActivity.this, LostFundActivity.class);
+                    startActivity(intent);
+
                     alertDialog.dismiss();
                 } else {
                     Toast.makeText(HomeActivity.this, "密码输入不匹配！", Toast.LENGTH_SHORT).show();
