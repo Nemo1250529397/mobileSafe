@@ -2,6 +2,7 @@ package nemo.com.mobilesafe;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -12,10 +13,14 @@ import android.widget.Toast;
  * Created by nemo on 16-6-19.
  */
 public abstract class BaseStepActivity extends Activity {
+
+    protected SharedPreferences sp = null;
     protected GestureDetector gestureDetector = null;
+    public static final String CONFIG = "config";
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sp = getSharedPreferences(CONFIG, MODE_PRIVATE);
 
         gestureDetector = new GestureDetector(getApplicationContext(), new GestureDetector.SimpleOnGestureListener(){
             @Override
