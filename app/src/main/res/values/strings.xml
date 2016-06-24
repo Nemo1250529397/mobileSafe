@@ -43,4 +43,7 @@
     <!--LostFundActivity-->
     <string name="lostfund_title">Protect to lost for the phone</string>
 
+    <!--SelectContactActivity-->
+    <string name="selectcontacttitle">Select Contact</string>
+
 </resources>
