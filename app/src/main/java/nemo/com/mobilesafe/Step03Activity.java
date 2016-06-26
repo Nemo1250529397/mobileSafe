@@ -2,6 +2,7 @@ package nemo.com.mobilesafe;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -13,6 +14,7 @@ import android.widget.EditText;
 public class Step03Activity extends BaseStepActivity implements View.OnClickListener {
     private EditText etSafeNum = null;
     private Button btSelCon = null;
+    private SharedPreferences sp = null;
 
     private static final int REQUESTCODE = 0;
 
@@ -22,6 +24,7 @@ public class Step03Activity extends BaseStepActivity implements View.OnClickList
 
         etSafeNum = (EditText) findViewById(R.id.et_step03_safenum);
         btSelCon = (Button) findViewById(R.id.btn_step03_selcon);
+        sp = getSharedPreferences("config", MODE_PRIVATE);
 
         btSelCon.setOnClickListener(this);
     }
@@ -50,11 +53,13 @@ public class Step03Activity extends BaseStepActivity implements View.OnClickList
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if(requestCode == REQUESTCODE) {
             if(100 == resultCode) {
+                SharedPreferences.Editor editor = sp.edit();
                 String name = data.getStringExtra("Name");
                 String telephoneNumber = data.getStringExtra("telephoneNumber");
+                editor.putString("safeNumber", telephoneNumber);
+                editor.commit();
 
                 etSafeNum.setText(telephoneNumber);
             }
