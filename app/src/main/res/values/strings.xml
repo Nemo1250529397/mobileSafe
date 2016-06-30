@@ -46,4 +46,10 @@
     <!--SelectContactActivity-->
     <string name="selectcontacttitle">Select Contact</string>
 
+    <!--AToolsActivity-->
+    <string name="atoolstitile">Advanced Tools</string>
+
+    <!--TelephoneNumberQueryActivity-->
+    <string name="telephonenumberquerytitle">Telephone Number Location Query</string>
+
 </resources>

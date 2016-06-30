@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import nemo.com.mobilesafe.receiver.SMSReceiver;
 import nemo.com.mobilesafe.utils.MD5Utils;
 
 /**
@@ -25,12 +26,14 @@ import nemo.com.mobilesafe.utils.MD5Utils;
  */
 public class LostFundActivity extends Activity {
     private SharedPreferences sp = null;
+    private SMSReceiver smsReceiver = null;
 
     public void onCreate(Bundle savedInstatnceSate) {
         super.onCreate(savedInstatnceSate);
         setContentView(R.layout.lostfund_activity);
 
         sp = getSharedPreferences("lostfundconfig", MODE_PRIVATE);
+        smsReceiver = new SMSReceiver();
 
         if(!sp.getBoolean("isSetup", false)) {
             Intent intent = new Intent(LostFundActivity.this, Step01Activity.class);
@@ -44,4 +47,11 @@ public class LostFundActivity extends Activity {
         startActivity(intent);
     }
 
+    public void startLocation(View view) {
+        smsReceiver.startLocation(this, "18392881127");
+    }
+
+    public void startAlarm(View view) {
+        smsReceiver.startAlarm(this);
+    }
 }

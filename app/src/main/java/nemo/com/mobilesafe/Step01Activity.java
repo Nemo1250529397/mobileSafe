@@ -8,6 +8,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
+import nemo.com.mobilesafe.receiver.SMSReceiver;
+
 /**
  * Created by nemo on 16-6-15.
  */

@@ -9,6 +9,7 @@ import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import nemo.com.mobilesafe.R;
 import nemo.com.mobilesafe.service.GPSService;
@@ -34,20 +35,9 @@ public class SMSReceiver extends BroadcastReceiver {
             if(sender.contains(safeNumber)) {
                 String smsBody = sms.getMessageBody();
                 if("#*location*#".equals(smsBody)) {
-                    Log.i(TAG, "GPS location!");
-                    Intent i = new Intent(context, GPSService.class);
-                    context.startService(i);
-                    String lastlocation = sharedPreferences.getString("lastlocation", null);
-                    if(TextUtils.isEmpty(lastlocation)) {
-                        SmsManager.getDefault().sendTextMessage(sender, null, "geting location ......", null, null);
-                    } else {
-                        SmsManager.getDefault().sendTextMessage(sender, null, lastlocation, null, null);
-                    }
+                    startLocation(context, sender);
                 } else if("#*alarm*#".equals(smsBody)) {
-                    MediaPlayer mediaPlayer = MediaPlayer.create(context, R.raw.ylzs);
-                    mediaPlayer.setLooping(false);
-                    mediaPlayer.setVolume(1.0f, 1.0f);
-                    mediaPlayer.start();
+                    startAlarm(context);
                 } else if("#*wipedata*#".equals(smsBody)) {
 
                 } else if("#*lockscree*#".equals(smsBody)) {
@@ -56,5 +46,38 @@ public class SMSReceiver extends BroadcastReceiver {
                 abortBroadcast();
             }
         }
+    }
+
+    public void startLocation(Context context, String sender) {
+        Log.i(TAG, "GPS location!");
+        Intent i = new Intent(context, GPSService.class);
+        context.startService(i);
+        sharedPreferences = context.getSharedPreferences("config", Context.MODE_PRIVATE);
+        String lastlocation = sharedPreferences.getString("lastlocation", "");
+        if(TextUtils.isEmpty(lastlocation)) {
+            SmsManager.getDefault().sendTextMessage(sender, null, "geting location ......", null, null);
+        } else if(!TextUtils.isEmpty(sender)){
+            SmsManager.getDefault().sendTextMessage(sender, null, lastlocation, null, null);
+        } else {
+            Toast.makeText(context, "sender message is null!", Toast.LENGTH_SHORT).show();
+        }
+
+        if (TextUtils.isEmpty(lastlocation)) {
+            Log.i(TAG, "geting location ......");
+        } else {
+            Log.i(TAG, lastlocation);
+            Toast.makeText(context, lastlocation, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public static void startAlarm(Context context) {
+        MediaPlayer mediaPlayer = MediaPlayer.create(context, R.raw.ylzs);
+        mediaPlayer.setLooping(false);
+        mediaPlayer.setVolume(1.0f, 1.0f);
+        mediaPlayer.start();
+    }
+
+    public void startWipeDate() {
+
     }
 }
