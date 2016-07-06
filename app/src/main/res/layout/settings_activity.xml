@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:nemo="http://schemas.android.com/apk/res-auto"
+    xmlns:nemo1="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -23,6 +24,16 @@
         nemo:settings_title="@string/settings_title">
 
     </nemo.com.mobilesafe.ui.SettingItemView>
+
+    <nemo.com.mobilesafe.ui.SettingCallView
+        android:id="@+id/settingcallview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        nemo:desc_on="来电号码归属地查询开启"
+        nemo:desc_off="来电号码归属地查询关闭"
+        nemo:settings_title="设置号码归属地查询">
+
+    </nemo.com.mobilesafe.ui.SettingCallView>
 
 </LinearLayout>
 

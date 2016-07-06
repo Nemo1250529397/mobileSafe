@@ -52,6 +52,7 @@
         </receiver>
 
         <service android:name=".service.GPSService" />
+        <service android:name=".service.AddressService" />
 
     </application>
 

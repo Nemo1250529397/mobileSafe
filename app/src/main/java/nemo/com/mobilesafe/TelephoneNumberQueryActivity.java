@@ -5,7 +5,9 @@ import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -15,10 +17,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import nemo.com.mobilesafe.utils.TelephoneNumberQueryUtils;
+
 /**
  * Created by nemo on 16-6-30.
  */
-public class TelephoneNumberQueryActivity extends Activity {
+public class TelephoneNumberQueryActivity extends Activity implements TextWatcher {
     private EditText etTelephoneNumber = null;
     private TextView tvNumberLocation = null;
 
@@ -48,58 +52,31 @@ public class TelephoneNumberQueryActivity extends Activity {
             }
         }
 
-//        InputStream is = null;
-//        FileOutputStream fos = null;
-//        try {
-//            is = getAssets().open("address.db");
-////            fos = openFileOutput("address.db", MODE_PRIVATE);
-//            File file = new File(getFilesDir(), "address.db");
-//            fos = new FileOutputStream(file);
-//
-//            byte[] buffer = new byte[1024];
-//            int len = 0;
-//            while((len = is.read(buffer))!= -1) {
-//                fos.write(buffer, 0, len);
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } finally {
-//            if(fos != null) {
-//                try {
-//                    fos.close();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//            if(is != null) {
-//                try {
-//                    is.close();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
+        etTelephoneNumber.addTextChangedListener(this);
     }
 
     public void startQueryLocation(View view) {
         String telephoneNumber = etTelephoneNumber.getText().toString().trim();
+        String location = TelephoneNumberQueryUtils.dividleQueryLocation(this, telephoneNumber);
+        tvNumberLocation.setText("手机号码归属地： " + location);
+    }
 
-        if(!TextUtils.isEmpty(telephoneNumber)) {
-            SQLiteDatabase db = SQLiteDatabase.openDatabase(getFilesDir().getAbsolutePath()+"/address.db",
-                    null, SQLiteDatabase.OPEN_READONLY);
-            if(db.isOpen()) {
-                String sql = "select location from data2 where id=(select outkey from data1 where id=?)";
-                Cursor cursor = db.rawQuery(sql, new String[]{telephoneNumber.substring(0, 7)});
-                if(cursor != null) {
-                    while(cursor.moveToNext()) {
-                        String location = cursor.getString(0);
-                        tvNumberLocation.setText("手机号码归属地： " + location);
-                    }
-                    cursor.close();
-                }
-                db.close();
-            }
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        if(!TextUtils.isEmpty(s)) {
+            String telephoneNumber = etTelephoneNumber.getText().toString().trim();
+            String location = TelephoneNumberQueryUtils.dividleQueryLocation(this, telephoneNumber);
+            tvNumberLocation.setText("手机号码归属地： " + location);
         }
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+
     }
 }
