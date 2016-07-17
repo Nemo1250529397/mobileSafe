@@ -10,6 +10,7 @@ import android.view.View;
 import java.util.List;
 
 import nemo.com.mobilesafe.service.AddressService;
+import nemo.com.mobilesafe.service.CallSmsSafeService;
 import nemo.com.mobilesafe.ui.SettingCallView;
 import nemo.com.mobilesafe.ui.SettingItemView;
 import nemo.com.mobilesafe.utils.ServiceUtils;
@@ -26,6 +27,9 @@ public class SettingsActivity extends Activity implements View.OnClickListener {
     public final static String SETTINGS = "settings";
     public final static String AUTOUPDATE = "autoupdate";
     public final static String LOCATIONQUERY = "locationquery";
+
+    private SettingItemView siv_callsms_safe;
+    private Intent callSmsSafeIntent;
 
     public void onCreate(Bundle savedInstatnceState) {
         super.onCreate(savedInstatnceState);
@@ -51,6 +55,9 @@ public class SettingsActivity extends Activity implements View.OnClickListener {
         } else {
             scv.setStatus(false);
         }
+
+        siv_callsms_safe = (SettingItemView) findViewById(R.id.siv_callsms_safe);
+        callSmsSafeIntent = new Intent(SettingsActivity.this, CallSmsSafeService.class);
     }
 
     @Override
