@@ -62,6 +62,26 @@ public class BlackNumberDao {
         return result;
     }
 
+    public List<BlackNumberInfo> findPart(int maxSize, int offset) {
+        List<BlackNumberInfo> result = new ArrayList<BlackNumberInfo>();
+        SQLiteDatabase db = blackNumberOpenHelper.getReadableDatabase();
+//        Cursor cursor = db.rawQuery("SELECT number, mode FROM blacknumber order by _id desc", null);
+
+        Cursor cursor = db.rawQuery("SELECT number, mode FROM blacknumber order by _id desc LIMIT ? OFFSET ?",
+                new String[]{String.valueOf(maxSize), String.valueOf(offset)});
+        while(cursor.moveToNext()) {
+            BlackNumberInfo info = new BlackNumberInfo();
+            String number = cursor.getString(0);
+            String mode = cursor.getString(1);
+            info.setNumber(number);
+            info.setMode(mode);
+            result.add(info);
+        }
+        cursor.close();
+        db.close();
+        return result;
+    }
+
     public void add(String number, String mode) {
         SQLiteDatabase db = blackNumberOpenHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();

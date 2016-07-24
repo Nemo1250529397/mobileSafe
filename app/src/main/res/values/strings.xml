@@ -52,4 +52,11 @@
     <!--TelephoneNumberQueryActivity-->
     <string name="telephonenumberquerytitle">Telephone Number Location Query</string>
 
+    <!--CallSmsSafeActivity-->
+    <string name="callsmssafetitle">黑名单拦截设置</string>
+    <string name="callsmssafe_on">黑名单拦截已经开启</string>
+    <string name="callsmssafe_off">黑名单拦截已经关闭</string>
+
+    <!--AppManagerActivity-->
+    <string name="appmanagermaintitle">进程管理</string>
 </resources>

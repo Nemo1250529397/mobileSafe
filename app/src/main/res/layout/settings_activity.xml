@@ -39,9 +39,9 @@
         android:id="@+id/siv_callsms_safe"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        nemo:desc_off="黑名单拦截已经关闭"
-        nemo:desc_on="黑名单拦截已经开启"
-        nemo:settings_title="黑名单拦截设置">
+        nemo:desc_off="@string/callsmssafe_off"
+        nemo:desc_on="@string/callsmssafe_on"
+        nemo:settings_title="@string/callsmssafetitle">
 
     </nemo.com.mobilesafe.ui.SettingItemView>
 

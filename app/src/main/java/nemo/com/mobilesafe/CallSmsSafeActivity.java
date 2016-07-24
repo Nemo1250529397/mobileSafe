@@ -5,9 +5,11 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -26,20 +28,65 @@ import nemo.com.mobilesafe.domain.BlackNumberInfo;
  * Created by nemo on 16-7-17.
  */
 public class CallSmsSafeActivity extends Activity {
+    private static final String TAG = "CallSmsSafeActivity";
     private ListView lvCallSmsSafe = null;
     private BlackNumberDao blackNumberDao = null;
     private List<BlackNumberInfo> list = null;
     private MyAdapter myAdapter = null;
 
+    private int maxSize = 10;
+    private int offset = 0;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.callsmssafe_activity);
         blackNumberDao = new BlackNumberDao(this);
-        list = blackNumberDao.findAll();
+//        list = blackNumberDao.findAll();
+
+        list = blackNumberDao.findPart(maxSize, offset);
         lvCallSmsSafe = (ListView) findViewById(R.id.lv_callsms_safe);
 
         myAdapter = new MyAdapter();
         lvCallSmsSafe.setAdapter(myAdapter);
+        lvCallSmsSafe.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                switch (scrollState) {
+                    case AbsListView.OnScrollListener.SCROLL_STATE_FLING: {
+                        Log.i(TAG, "I am the state of SCROLL_STATE_FLING");
+                        break;
+                    }
+
+                    case AbsListView.OnScrollListener.SCROLL_STATE_IDLE: {
+                        Log.i(TAG, "I am the state of SCROLL_STATE_IDLE");
+
+                        int lastPoaition = lvCallSmsSafe.getLastVisiblePosition();
+                        if(lastPoaition == (list.size() - 1)) {
+
+                            offset += maxSize;
+                            list = blackNumberDao.findPart(maxSize, offset);
+                            myAdapter.notifyDataSetChanged();
+                            
+                        }
+                        break;
+                    }
+
+                    case AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL: {
+                        Log.i(TAG, "I am the state of SCROLL_STATE_TOUCH_SCROLL");
+                        break;
+                    }
+
+                    default: {
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+            }
+        });
     }
 
     private EditText etBlackNumber = null;

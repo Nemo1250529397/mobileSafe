@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -58,6 +59,13 @@ public class SettingsActivity extends Activity implements View.OnClickListener {
 
         siv_callsms_safe = (SettingItemView) findViewById(R.id.siv_callsms_safe);
         callSmsSafeIntent = new Intent(SettingsActivity.this, CallSmsSafeService.class);
+
+        if(ServiceUtils.isServiceRunning(this, CallSmsSafeService.class.getName())) {
+            siv_callsms_safe.setStatus(true);
+        } else {
+            siv_callsms_safe.setStatus(false);
+        }
+        siv_callsms_safe.setOnClickListener(this);
     }
 
     @Override
@@ -85,6 +93,18 @@ public class SettingsActivity extends Activity implements View.OnClickListener {
                 }
                 break;
             }
+            case R.id.siv_callsms_safe: {
+                if(ServiceUtils.isServiceRunning(this, CallSmsSafeService.class.getName())) {
+                    siv_callsms_safe.setStatus(false);
+                    stopService(callSmsSafeIntent);
+                } else {
+                    siv_callsms_safe.setStatus(true);
+                    startService(callSmsSafeIntent);
+                    Toast.makeText(this, "Start Service of Call Sms Safe!", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            }
+
         }
 
         editor.commit();

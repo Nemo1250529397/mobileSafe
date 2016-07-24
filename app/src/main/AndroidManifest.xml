@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="nemo.com.mobilesafe"
+    android:installLocation="preferExternal"
     android:versionCode="2"
     android:versionName="2.0">
 
@@ -47,6 +48,7 @@
         <activity android:name=".AToolsActivity" />
         <activity android:name=".TelephoneNumberQueryActivity" />
         <activity android:name=".CallSmsSafeActivity" />
+        <activity android:name=".AppManagerActivity" />
 
         <receiver android:name=".receiver.BootCompleteReceiver">
             <intent-filter>

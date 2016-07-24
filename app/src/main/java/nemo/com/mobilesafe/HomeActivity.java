@@ -78,6 +78,12 @@ public class HomeActivity extends Activity implements AdapterView.OnItemClickLis
                 break;
             }
 
+            case 2: {
+                Intent intent = new Intent(HomeActivity.this, AppManagerActivity.class);
+                startActivity(intent);
+                break;
+            }
+
             case 7: {
                 Intent intent = new Intent(HomeActivity.this, AToolsActivity.class);
                 startActivity(intent);
