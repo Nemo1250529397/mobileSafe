@@ -1,30 +1,47 @@
 package nemo.com.mobilesafe;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
 import android.text.format.Formatter;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.ScaleAnimation;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import nemo.com.mobilesafe.domain.AppInfo;
 import nemo.com.mobilesafe.engine.AppInfoProvider;
+import nemo.com.mobilesafe.utils.DensityUtil;
 
 /**
  * Created by nemo on 16-7-24.
  */
-public class AppManagerActivity extends Activity {
+public class AppManagerActivity extends Activity implements View.OnClickListener {
+    private static final String TAG = "AppManagerActivity";
     private TextView tvAvailableRom;
     private TextView tvAvailableSD;
 
@@ -34,6 +51,14 @@ public class AppManagerActivity extends Activity {
     private List<AppInfo> appInfoList;
     private List<AppInfo> userAppInfoList;
     private List<AppInfo> systemAppInfoList;
+
+    private TextView tvStatus;
+    private PopupWindow popupWindow;
+    private LinearLayout llStart;
+    private LinearLayout llShare;
+    private LinearLayout llUninstall;
+    private AppInfo appInfo;
+    private AppInfoAdapter adapter;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,10 +83,87 @@ public class AppManagerActivity extends Activity {
         String sdText = "可用SD：" + Formatter.formatFileSize(this, availableSD);
         tvAvailableSD.setText(sdText);
 
+        tvStatus = (TextView) findViewById(R.id.tv_status);
+
+        adapter = new AppInfoAdapter();
+
+        fillData();
+
+        lvAppInfos.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                dismissPopupWindow();
+                if(userAppInfoList != null && systemAppInfoList != null) {
+                    if(firstVisibleItem > userAppInfoList.size()) {
+                        tvStatus.setText("系统软件：" + systemAppInfoList.size() + "个");
+                    } else {
+                        tvStatus.setText("用户软件：" + userAppInfoList.size() + "个");
+                    }
+                }
+            }
+        });
+
+        lvAppInfos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if(position == 0) {
+                    return;
+                } else if(position == userAppInfoList.size() + 1) {
+                    return;
+                } else if(position <= userAppInfoList.size()) {
+                    int newPosition = position - 1;
+                    appInfo = userAppInfoList.get(newPosition);
+                } else {
+                    int newPosition = position - userAppInfoList.size() - 2;
+                    appInfo = systemAppInfoList.get(newPosition);
+                }
+
+                dismissPopupWindow();
+
+                View contentView = View.inflate(getApplicationContext(), R.layout.popup_app_item, null);
+                llStart = (LinearLayout) contentView.findViewById(R.id.ll_start);
+                llShare = (LinearLayout) contentView.findViewById(R.id.ll_share);
+                llUninstall = (LinearLayout) contentView.findViewById(R.id.ll_uninstall);
+
+                llStart.setOnClickListener(AppManagerActivity.this);
+                llShare.setOnClickListener(AppManagerActivity.this);
+                llUninstall.setOnClickListener(AppManagerActivity.this);
+
+                popupWindow = new PopupWindow(contentView, -2, -2);
+                popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                int[] location = new int[2];
+                view.getLocationInWindow(location);
+
+                int dip = 60;
+                int px = DensityUtil.dip2px(getApplicationContext(), dip);
+                popupWindow.showAtLocation(parent, Gravity.LEFT | Gravity.TOP, px, location[1]);
+
+                ScaleAnimation sa = new ScaleAnimation(0.3f, 1.0f, 0.3f, 1.0f,
+                        Animation.RELATIVE_TO_SELF, 0,
+                        Animation.RELATIVE_TO_SELF, 0.5f);
+
+                sa.setDuration(300);
+                AlphaAnimation aa = new AlphaAnimation(0.5f, 1.0f);
+                aa.setDuration(300);
+                AnimationSet set = new AnimationSet(false);
+                set.addAnimation(aa);
+                set.addAnimation(sa);
+                contentView.setAnimation(set);
+
+            }
+        });
+    }
+
+    private void fillData() {
+        llLoading.setVisibility(View.VISIBLE);
         new Thread(){
             @Override
             public void run() {
-                llLoading.setVisibility(View.VISIBLE);
                 appInfoList = AppInfoProvider.getAppInfos(AppManagerActivity.this);
                 userAppInfoList = new ArrayList<AppInfo>();
                 systemAppInfoList = new ArrayList<AppInfo>();
@@ -77,13 +179,94 @@ public class AppManagerActivity extends Activity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        lvAppInfos.setAdapter(new AppInfoAdapter());
+                        lvAppInfos.setAdapter(adapter);
                         llLoading.setVisibility(View.INVISIBLE);
                     }
                 });
 
             }
         }.start();
+    }
+
+    private void dismissPopupWindow() {
+        if(popupWindow != null && popupWindow.isShowing()) {
+            popupWindow.dismiss();
+            popupWindow = null;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        dismissPopupWindow();
+    }
+
+    @Override
+    public void onClick(View v) {
+        dismissPopupWindow();
+        switch (v.getId()) {
+            case R.id.ll_share: {
+                Log.i(TAG, "程序分享：" + appInfo.getName());
+                shareApplication();
+                break;
+            }
+
+            case R.id.ll_start: {
+                Log.i(TAG, "启动程序：" + appInfo.getName());
+                startApplication();
+                break;
+            }
+
+            case R.id.ll_uninstall: {
+                if(appInfo.isUserApp()) {
+                    Log.i(TAG, "卸载程序：" + appInfo.getName());
+                    uninstallApplication();
+                } else {
+                    Toast.makeText(this, "系统程序， 不能卸载！", Toast.LENGTH_SHORT).show();
+                }
+
+                break;
+            }
+        }
+    }
+
+    private void uninstallApplication() {
+        Intent intent = new Intent();
+        intent.setAction("android.intent.action.VIEW");
+        intent.setAction("android.intent.action.DELETE");
+        intent.addCategory("android.intent.category.DEFAULT");
+        intent.setData(Uri.parse("package:" + appInfo.getPackageName()));
+        startActivityForResult(intent, 0);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        fillData();
+    }
+
+    private void startApplication() {
+        PackageManager pm = getPackageManager();
+
+//        Intent intent = new Intent();
+//        intent.setAction("android.intent.action.MAIN");
+//        intent.addCategory("android.intent.category.LAUNCHER");
+//        List<ResolveInfo> infos = pm.queryIntentActivities(intent, PackageManager.GET_INTENT_FILTERS);
+
+        Intent intent = pm.getLaunchIntentForPackage(appInfo.getPackageName());
+        if(intent != null) {
+            startActivity(intent);
+        } else {
+            Toast.makeText(this, "启动应用程序：" + appInfo.getName() + "失败！", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void shareApplication() {
+        Intent intent = new Intent();
+        intent.setAction("android.intent.action.SEND");
+        intent.addCategory(Intent.CATEGORY_DEFAULT);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, "分享应用程序：" + appInfo.getName());
+        startActivity(intent);
     }
 
     class AppInfoAdapter extends BaseAdapter {

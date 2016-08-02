@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -105,6 +106,7 @@ public class SplashActivity extends Activity {
         pbUpdate = (ProgressBar) findViewById(R.id.pb_updateprogress);
 
         sp = getSharedPreferences(SettingsActivity.SETTINGS, MODE_PRIVATE);
+        installShortCut();
 
         if(sp.getBoolean(SettingsActivity.AUTOUPDATE, false)) {
             requestUpate();
@@ -113,6 +115,31 @@ public class SplashActivity extends Activity {
             enterHome();
             finish();
         }
+    }
+
+    private void installShortCut() {
+        boolean shortCut = sp.getBoolean("shortcut",false);
+
+        if(shortCut) {
+            return;
+        } else {
+            SharedPreferences.Editor editor = sp.edit();
+            Intent intent = new Intent();
+            intent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
+            intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "我的手机卫士");
+            intent.putExtra(Intent.EXTRA_SHORTCUT_ICON, BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
+
+            Intent shortCutIntent = new Intent();
+            shortCutIntent.setAction("android.intent.action.MAIN");
+            shortCutIntent.addCategory("android.intent.category.LAUNCHER");
+            shortCutIntent.setClassName(getPackageName(), "nemo.com.mobilesafe.SplashActivity");
+
+            intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortCutIntent);
+            sendBroadcast(intent);
+            editor.putBoolean("shortcut", true);
+            editor.commit();
+        }
+
     }
 
     public void showUpdateDialog() {
