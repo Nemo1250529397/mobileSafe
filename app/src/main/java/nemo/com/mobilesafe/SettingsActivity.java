@@ -12,6 +12,7 @@ import java.util.List;
 
 import nemo.com.mobilesafe.service.AddressService;
 import nemo.com.mobilesafe.service.CallSmsSafeService;
+import nemo.com.mobilesafe.service.WatchDogService;
 import nemo.com.mobilesafe.ui.SettingCallView;
 import nemo.com.mobilesafe.ui.SettingItemView;
 import nemo.com.mobilesafe.utils.ServiceUtils;
@@ -31,6 +32,9 @@ public class SettingsActivity extends Activity implements View.OnClickListener {
 
     private SettingItemView siv_callsms_safe;
     private Intent callSmsSafeIntent;
+
+    private SettingItemView siv_watchdog;
+    private Intent watchDogIntent;
 
     public void onCreate(Bundle savedInstatnceState) {
         super.onCreate(savedInstatnceState);
@@ -66,6 +70,39 @@ public class SettingsActivity extends Activity implements View.OnClickListener {
             siv_callsms_safe.setStatus(false);
         }
         siv_callsms_safe.setOnClickListener(this);
+
+        siv_watchdog = (SettingItemView) findViewById(R.id.siv_watchdog);
+        siv_watchdog.setOnClickListener(this);
+        watchDogIntent = new Intent(SettingsActivity.this, WatchDogService.class);
+    }
+
+    @Override
+    protected void onResume() {
+        // TODO Auto-generated method stub
+        super.onResume();
+        showAddress = new Intent(this, AddressService.class);
+        boolean isServiceRunning = ServiceUtils.isServiceRunning(
+                SettingsActivity.this,
+                AddressService.class.getName());
+
+//        if(isServiceRunning){
+//            //¼àÌýÀ´µçµÄ·þÎñÊÇ¿ªÆôµÄ
+//            siv_show_address.setChecked(true);
+//        }else{
+//            siv_show_address.setChecked(false);
+//        }
+
+
+        boolean iscallSmsServiceRunning = ServiceUtils.isServiceRunning(
+                SettingsActivity.this,
+                CallSmsSafeService.class.getName());
+        siv_callsms_safe.setStatus(iscallSmsServiceRunning);
+
+        boolean iswatchdogServiceRunning = ServiceUtils.isServiceRunning(
+                SettingsActivity.this,
+                WatchDogService.class.getName());
+        siv_watchdog.setStatus(iswatchdogServiceRunning);
+
     }
 
     @Override
@@ -104,7 +141,16 @@ public class SettingsActivity extends Activity implements View.OnClickListener {
                 }
                 break;
             }
-
+            case R.id.siv_watchdog: {
+                if(ServiceUtils.isServiceRunning(this, WatchDogService.class.getName())) {
+                    siv_watchdog.setStatus(false);
+                    stopService(watchDogIntent);
+                } else {
+                    siv_watchdog.setStatus(true);
+                    startService(watchDogIntent);
+                }
+                break;
+            }
         }
 
         editor.commit();

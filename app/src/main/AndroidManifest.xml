@@ -15,10 +15,8 @@
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-
-    <!--<instrumentation-->
-        <!--android:name="android.test.InstrumentationTestRunner"-->
-        <!--android:targetPackage="nemo.com.mobilesafe" />-->
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
 
     <application
         android:allowBackup="true"
@@ -27,8 +25,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         
-        <!--<uses-library android:name="android.test.runner" />-->
-
         <activity android:name=".SplashActivity"
             android:label="@string/app_name">
             <intent-filter>
@@ -49,6 +45,14 @@
         <activity android:name=".TelephoneNumberQueryActivity" />
         <activity android:name=".CallSmsSafeActivity" />
         <activity android:name=".AppManagerActivity" />
+        <activity android:name=".TaskManagerActivity" />
+        <activity android:name=".TaskSettingActivity" />
+        <activity android:name=".EnterPwdActivity"
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance"/>
+        <activity android:name=".TrafficManagerActivity" />
+        <activity android:name=".AntVirusActivity" />
+        <activity android:name=".CleanCacheActivity" />
 
         <receiver android:name=".receiver.BootCompleteReceiver">
             <intent-filter>
@@ -60,10 +64,26 @@
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
+        <receiver android:name=".receiver.MobileSafeAppWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget_info" />
+        </receiver>
+
+        <receiver android:name=".receiver.KillAllReceiver">
+            <intent-filter>
+                <action android:name="nemo.com.mobilesafe.receiver.killall" />
+            </intent-filter>
+        </receiver>
 
         <service android:name=".service.GPSService" />
         <service android:name=".service.AddressService" />
         <service android:name=".service.CallSmsSafeService" />
+        <service android:name=".service.AutoCleanService" />
+        <service android:name=".service.UpdateWidgetService" />
+        <service android:name=".service.WatchDogService" />
 
     </application>
 

@@ -59,4 +59,9 @@
 
     <!--AppManagerActivity-->
     <string name="appmanagermaintitle">进程管理</string>
+
+    <!--WatchDogActivity-->
+    <string name="watchdogtitle">程序锁设置</string>
+    <string name="watchdog_on">看门狗已经开启</string>
+    <string name="watchdog_off">看门狗已经关闭</string>
 </resources>

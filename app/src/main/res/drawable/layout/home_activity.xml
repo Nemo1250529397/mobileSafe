@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:text="@string/hometitile"
+        android:background="#8866ff00"
+        android:textSize="22sp"
+        android:textColor="#000000"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="60dip" />
+
+    <nemo.com.mobilesafe.ui.MyTextView
+        android:id="@+id/tv_ad"
+        android:singleLine="true"
+        android:ellipsize="marquee"
+        android:text="@string/advertisement"
+        android:textSize="16sp"
+        android:textColor="#FF0000"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <GridView
+        android:id="@+id/gv_module"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:numColumns="3"/>
+
+</LinearLayout>

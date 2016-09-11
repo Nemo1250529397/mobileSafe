@@ -33,6 +33,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import nemo.com.mobilesafe.db.dao.AppLockDao;
 import nemo.com.mobilesafe.domain.AppInfo;
 import nemo.com.mobilesafe.engine.AppInfoProvider;
 import nemo.com.mobilesafe.utils.DensityUtil;
@@ -59,6 +60,8 @@ public class AppManagerActivity extends Activity implements View.OnClickListener
     private LinearLayout llUninstall;
     private AppInfo appInfo;
     private AppInfoAdapter adapter;
+
+    private AppLockDao appLockDao;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,6 +90,8 @@ public class AppManagerActivity extends Activity implements View.OnClickListener
 
         adapter = new AppInfoAdapter();
 
+        appLockDao = new AppLockDao(this);
+
         fillData();
 
         lvAppInfos.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -98,8 +103,8 @@ public class AppManagerActivity extends Activity implements View.OnClickListener
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 dismissPopupWindow();
-                if(userAppInfoList != null && systemAppInfoList != null) {
-                    if(firstVisibleItem > userAppInfoList.size()) {
+                if (userAppInfoList != null && systemAppInfoList != null) {
+                    if (firstVisibleItem > userAppInfoList.size()) {
                         tvStatus.setText("系统软件：" + systemAppInfoList.size() + "个");
                     } else {
                         tvStatus.setText("用户软件：" + userAppInfoList.size() + "个");
@@ -111,11 +116,11 @@ public class AppManagerActivity extends Activity implements View.OnClickListener
         lvAppInfos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(position == 0) {
+                if (position == 0) {
                     return;
-                } else if(position == userAppInfoList.size() + 1) {
+                } else if (position == userAppInfoList.size() + 1) {
                     return;
-                } else if(position <= userAppInfoList.size()) {
+                } else if (position <= userAppInfoList.size()) {
                     int newPosition = position - 1;
                     appInfo = userAppInfoList.get(newPosition);
                 } else {
@@ -155,6 +160,33 @@ public class AppManagerActivity extends Activity implements View.OnClickListener
                 set.addAnimation(sa);
                 contentView.setAnimation(set);
 
+            }
+        });
+
+        lvAppInfos.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                if(position == 0) {
+                    return true;
+                } else if (position == (userAppInfoList.size() + 1)) {
+                    return true;
+                } else if(position <= userAppInfoList.size()) {
+                    int newPosition = position - 1;
+                    appInfo = userAppInfoList.get(newPosition);
+                } else {
+                    int newPosition = position - userAppInfoList.size() - 2;
+                    appInfo = userAppInfoList.get(newPosition);
+                }
+
+                AppInfoAdapter.ViewHolder holder = (AppInfoAdapter.ViewHolder) view.getTag();
+                if(appLockDao.find(appInfo.getPackageName())) {
+                    appLockDao.delete(appInfo.getPackageName());
+                    holder.ivStatus.setImageResource(R.drawable.unlock);
+                } else {
+                    appLockDao.add(appInfo.getPackageName());
+                    holder.ivStatus.setImageResource(R.drawable.lock);
+                }
+                return true;
             }
         });
     }
@@ -332,6 +364,11 @@ public class AppManagerActivity extends Activity implements View.OnClickListener
                 viewHolder.tvLocation.setText("内部安装");
             } else {
                 viewHolder.tvLocation.setText("外部安装");
+            }
+            if(appLockDao.find(appInfo.getPackageName())) {
+                viewHolder.ivStatus.setImageResource(R.drawable.lock);
+            } else {
+                viewHolder.ivStatus.setImageResource(R.drawable.unlock);
             }
 
             return view;

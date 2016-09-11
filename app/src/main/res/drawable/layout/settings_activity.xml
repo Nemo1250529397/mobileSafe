@@ -45,15 +45,5 @@
 
     </nemo.com.mobilesafe.ui.SettingItemView>
 
-    <nemo.com.mobilesafe.ui.SettingItemView
-        android:id="@+id/siv_watchdog"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        nemo:desc_off="@string/watchdog_off"
-        nemo:desc_on="@string/watchdog_on"
-        nemo:settings_title="@string/watchdogtitle">
-
-    </nemo.com.mobilesafe.ui.SettingItemView>
-
 </LinearLayout>
 
